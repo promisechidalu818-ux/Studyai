@@ -1,0 +1,14 @@
+{
+  "name": "studyai",
+  "version": "1.0.0",
+  "description": "A minimal Node.js starter for the StudyAI application.",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
