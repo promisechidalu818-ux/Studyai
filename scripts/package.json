@@ -10,5 +10,8 @@
   "devDependencies": {
     "@types/node": "catalog:",
     "tsx": "catalog:"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
   }
 }

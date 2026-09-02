@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f7fb;
+      color: #1f2937;
+    }
+
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 28px;
+    }
+
+    header p {
+      margin-top: 6px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 160px;
+      padding: 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      resize: vertical;
+      font-size: 16px;
+      margin-top: 15px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #eff6ff;
+      border-radius: 10px;
+      display: none;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 20px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>📚 Study AI</h1>
+    <p>Your simple AI study assistant</p>
+  </header>
+
+  <div class="container">
+    <div class="card">
+
+      <h2>Ask Study AI</h2>
+      <p style="margin-top: 8px;">
+        Enter a question or topic you want to study.
+      </p>
+
+      <textarea id="question" placeholder="Example: Explain photosynthesis in simple words..."></textarea>
+
+      <button onclick="askStudyAI()">Ask Study AI</button>
+
+      <div id="result"></div>
+
+    </div>
+  </div>
+
+  <footer>
+    © 2026 Study AI
+  </footer>
+
+  <script>
+    function askStudyAI() {
+      const question = document.getElementById("question").value.trim();
+      const result = document.getElementById("result");
+
+      if (!question) {
+        result.style.display = "block";
+        result.textContent = "Please enter a question first.";
+        return;
+      }
+
+      result.style.display = "block";
+
+      result.innerHTML =
+        "<strong>Study AI:</strong><br><br>" +
+        "Your question was: <em>" + question + "</em><br><br>" +
+        "This is the Study AI prototype. The next step will be connecting it to a real AI system so it can generate answers to your questions.";
+    }
+  </script>
+
+</body>
+</html>
