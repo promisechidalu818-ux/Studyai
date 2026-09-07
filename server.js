@@ -3,8 +3,29 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
+app.use(express.static("."));
+
 app.get("/", (req, res) => {
-  res.send("Study AI is working!");
+  res.sendFile(__dirname + "/index.html");
+});
+
+app.post("/api/ask", (req, res) => {
+  const question = String(req.body.question || "").trim();
+
+  if (!question) {
+    return res.status(400).json({
+      error: "Please enter a question."
+    });
+  }
+
+  const answer = `Here is a simple explanation of your question:
+
+${question}
+
+Study AI is ready to help you understand this topic.`;
+
+  res.json({ answer });
 });
 
 app.listen(PORT, "0.0.0.0", () => {
