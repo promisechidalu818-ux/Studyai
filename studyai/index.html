@@ -744,39 +744,20 @@ footer { display: none !important; }
       }
 
       function renderAnswer(question, guide) {
-        const sections = guide.sections
-          .map(
-            (section) => `
-              <div class="answer-section">
-                <h4>${escapeHtml(section.heading)}</h4>
-                <p>${escapeHtml(section.body)}</p>
-              </div>
-            `,
-          )
-          .join("");
-        const followUps = guide.followUps
-          .map(
-            (followUp) =>
-              `<button type="button" data-prompt="${escapeHtml(followUp)}">${escapeHtml(followUp)}</button>`,
-          )
-          .join("");
+  const text = typeof guide === "string"
+    ? guide
+    : (guide?.answer || guide?.text || "No answer was generated.");
 
-        answer.innerHTML = `
-          <div class="answer-topline">
-            <span class="topic-label">${escapeHtml(guide.topic)}</span>
-            <span class="topic-label">Study note</span>
-          </div>
-          <h3>${escapeHtml(guide.title)}</h3>
-          <p class="answer-question">You asked: “${escapeHtml(question)}”</p>
-          <p class="answer-summary">${escapeHtml(guide.summary)}</p>
-          ${sections}
-          <div class="follow-ups" aria-label="Continue studying">${followUps}</div>
-        `;
-        answer.classList.remove("visible");
-        requestAnimationFrame(() => answer.classList.add("visible"));
-      }
+  answer.innerHTML = `
+    <div class="answer-topline">StudyAI</div>
+    <div class="answer-section">
+      <p>${escapeHtml(text).replace(/\\n/g, "<br>")}</p>
+    </div>
+  `;
+  answer.classList.remove("hidden");
+}
 
-      async function askQuestion(question) {
+async function askQuestion(question) {
         const trimmedQuestion = question.trim();
         if (!trimmedQuestion) {
           setError("Please enter a question first.");
