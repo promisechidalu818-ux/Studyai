@@ -52,7 +52,7 @@ const server = http.createServer((req, res) => {
       } catch (error) {
         console.error("Gemini error:", error);
         sendJson(res, 500, {
-          answer: "Sorry, StudyAI could not answer that question right now."
+          answer: "StudyAI error: " + (error.message || String(error))
         });
       }
     });
