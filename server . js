@@ -1,7 +1,12 @@
 const express = require("express");
+const { GoogleGenAI } = require("@google/genai");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY
+});
 
 app.use(express.json());
 app.use(express.static("."));
@@ -10,7 +15,7 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-app.post("/api/ask", (req, res) => {
+app.post("/api/ask", async (req, res) => {
   const question = String(req.body.question || "").trim();
 
   if (!question) {
@@ -19,13 +24,30 @@ app.post("/api/ask", (req, res) => {
     });
   }
 
-  const answer = `Here is a simple explanation of your question:
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `You are Study AI, an educational assistant.
 
+Help the student understand the following question clearly.
+
+Question:
 ${question}
 
-Study AI is ready to help you understand this topic.`;
+Give a simple, accurate explanation. Use examples or steps when useful.`
+    });
 
-  res.json({ answer });
+    res.json({
+      answer: response.text
+    });
+
+  } catch (error) {
+    console.error("Gemini error:", error);
+
+    res.status(500).json({
+      error: "Study AI could not answer right now. Please try again."
+    });
+  }
 });
 
 app.listen(PORT, "0.0.0.0", () => {

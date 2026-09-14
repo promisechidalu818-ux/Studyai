@@ -90,6 +90,7 @@ const server = http.createServer((req, res) => {
     };
 
     res.writeHead(200, {
+      "Cache-Control": "no-store",
       "Content-Type": types[ext] || "text/plain"
     });
 
