@@ -1,822 +1,1522 @@
-<!DOCTYPE html>
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta
+name="description"
+content="StudyAI is a focused study assistant for clear explanations and better revision."
+/>
+
+  <meta name="theme-color" content="#212121" />  <title>StudyAI — Learn with clarity</title>  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #212121;
+      color: #ececec;
+      min-height: 100vh;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid #343434;
+      background: #212121;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #2563eb;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .brand-text h1 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .brand-text p {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+    }
+
+    main {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      flex: 1;
+      padding: 42px 20px 150px;
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .intro h2 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .intro p {
+      color: #aaa;
+      font-size: 15px;
+      line-height: 1.6;
+    }.welcome-card {
+background: #2a2a2a;
+border: 1px solid #3a3a3a;
+border-radius: 16px;
+padding: 22px;
+margin-bottom: 25px;
+}
+
+.welcome-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.welcome-card p {
+  color: #aaa;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.quick-prompts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.quick-btn {
+  border: 1px solid #3d3d3d;
+  background: #292929;
+  color: #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-size: 14px;
+}
+
+.quick-btn:hover {
+  background: #333;
+  border-color: #555;
+  transform: translateY(-1px);
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.message {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.assistant .avatar {
+  background: #2563eb;
+  color: white;
+}
+
+.user .avatar {
+  background: #444;
+  color: #ddd;
+  order: 2;
+}
+
+.bubble {
+  max-width: 75%;
+  padding: 13px 15px;
+  border-radius: 14px;
+  font-size: 15px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.assistant .bubble {
+  background: #2b2b2b;
+  border: 1px solid #3a3a3a;
+}
+
+.user .bubble {
+  background: #2563eb;
+  color: white;
+}
+
+.typing {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  margin-left: 46px;
+  margin-top: 4px;
+}
+
+.typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #888;
+  animation: typing 1.2s infinite;
+}
+
+.typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+.composer-wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    to top,
+    #212121 75%,
+    rgba(33, 33, 33, 0)
+  );
+  padding: 25px 20px 20px;
+}
+
+.composer {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.25);
+}
+
+#question {
+  flex: 1;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #eee;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 44px;
+  max-height: 150px;
+  padding: 10px;
+}
+
+#question::placeholder {
+  color: #888;
+}
+
+#sendBtn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+#sendBtn:hover {
+  background: #1d4ed8;
+}
+
+#sendBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  header {
+    padding: 0 15px;
+  }
+
+  .brand-text p {
+    display: none;
+  }
+
+  .status {
+    font-size: 11px;
+  }
+
+  main {
+    padding: 30px 14px 145px;
+  }
+
+  .intro h2 {
+    font-size: 26px;
+  }
+
+  .quick-prompts {
+    grid-template-columns: 1fr;
+  }
+
+  .bubble {
+    max-width: 86%;
+  }
+
+  .composer-wrap {
+    padding: 18px 10px 12px;
+  }
+}
+
+  </style></head><body>
+  <div class="app"><header>
+  <div class="brand">
+    <div class="logo">S</div>
+
+    <div class="brand-text">
+      <h1>StudyAI</h1>
+      <p>Your personal study assistant</p>
+    </div>
+  </div>
+
+  <div class="status">
+    <span class="status-dot"></span>
+    <span>AI Online</span>
+  </div>
+</header>
+
+<main>
+
+  <section class="intro">
+    <h2>Learn with clarity.</h2>
+    <p>
+      Ask questions, understand difficult topics, and improve your revision
+      with your personal AI study assistant.
+    </p>
+  </section>
+
+  <section class="welcome-card">
+    <h3>👋 Welcome to StudyAI</h3>
+    <p>
+      I can explain school topics, solve problems step by step,
+      simplify difficult ideas, and help you prepare for exams.
+      What would you like to learn today?
+    </p>
+  </section>
+
+  <section class="quick-prompts">
+
+    <button
+      class="quick-btn"
+      data-question="Explain photosynthesis in simple terms."
+    >
+      🌱 Explain photosynthesis
+    </button>
+
+    <button
+      class="quick-btn"
+      data-question="Solve 2x + 5 = 15 step by step."
+    >
+      ➗ Solve 2x + 5 = 15
+    </button>
+
+    <button
+      class="quick-btn"
+      data-question="What is artificial intelligence? Explain it simply."
+    >
+      🤖 What is artificial intelligence?
+    </button>
+
+    <button
+      class="quick-btn"
+      data-question="Explain Newton's three laws of motion with examples."
+    >
+      ⚙️ Explain Newton's laws
+    </button>
+
+  </section>
+
+  <section id="chat" class="chat"></section>
+
+  <div id="typing" class="typing">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+</main>
+
+<div class="composer-wrap">
+  <form id="composer" class="composer">
+
+    <textarea
+      id="question"
+      rows="1"
+      placeholder="Ask StudyAI anything..."
+      autocomplete="off"
+    ></textarea>
+
+    <button id="sendBtn" type="submit" aria-label="Send question">
+      ➤
+    </button>
+
+  </form>
+</div>
+
+  </div><!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="StudyAI is a focused study assistant for clear explanations and better revision."
-    />
-    <meta name="theme-color" content="#2563eb" />
-    <title>StudyAI — Learn with clarity</title>
-    <style>
-      :root {
-        color-scheme: light;
-        --blue-950: #102a56;
-        --blue-900: #173c78;
-        --blue-700: #2563eb;
-        --blue-600: #3d7af3;
-        --blue-100: #eaf2ff;
-        --blue-50: #f4f8ff;
-        --ink: #1d2a3d;
-        --muted: #6d7b91;
-        --line: #e3eaf4;
-        --surface: #ffffff;
-        --page: #f5f8fc;
-        --shadow: 0 18px 50px rgba(34, 67, 118, 0.1);
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta
+    name="description"
+    content="StudyAI is a focused study assistant for clear explanations and better revision."
+  />
+
+  <meta name="theme-color" content="#212121" />
+
+  <title>StudyAI — Learn with clarity</title>
+
+  <style>
+    :root {
+      --bg: #212121;
+      --surface: #2f2f2f;
+      --surface-2: #40414f;
+      --border: #444654;
+      --text: #ececec;
+      --muted: #a7a7a7;
+      --blue: #3b82f6;
+      --blue-hover: #2563eb;
+      --green: #22c55e;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    button,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* =========================
+       APP
+    ========================= */
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .topbar {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 24px;
+
+      border-bottom: 1px solid var(--border);
+      background: #212121;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 9px;
+
+      background: var(--blue);
+
+      color: white;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+
+      border-radius: 50%;
+
+      background: var(--green);
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .main {
+      width: min(900px, 100%);
+      margin: 0 auto;
+
+      flex: 1;
+
+      padding: 60px 24px 120px;
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+
+      color: #60a5fa;
+
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+
+      color: white;
+
+      font-size: clamp(34px, 6vw, 54px);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .intro p {
+      max-width: 600px;
+
+      margin: 18px auto 0;
+
+      color: var(--muted);
+
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    /* =========================
+       CHAT AREA
+    ========================= */
+
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .message {
+      display: flex;
+      gap: 14px;
+
+      animation: messageIn 0.25s ease;
+    }
+
+    .message-avatar {
+      width: 34px;
+      height: 34px;
+
+      flex: 0 0 34px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 8px;
+
+      background: var(--surface-2);
+
+      color: white;
+
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .message.user .message-avatar {
+      background: var(--blue);
+    }
+
+    .message-content {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .message-name {
+      margin-bottom: 5px;
+
+      color: #fff;
+
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .message-text {
+      color: #d1d1d1;
+
+      font-size: 15px;
+      line-height: 1.7;
+
+      white-space: pre-wrap;
+    }
+
+    .message-text strong {
+      color: white;
+    }
+
+    /* =========================
+       WELCOME
+    ========================= */
+
+    .welcome {
+      padding: 25px;
+
+      border: 1px solid var(--border);
+      border-radius: 14px;
+
+      background: var(--surface);
+    }
+
+    .welcome h2 {
+      margin: 0 0 8px;
+
+      font-size: 19px;
+    }
+
+    .welcome p {
+      margin: 0;
+
+      color: var(--muted);
+
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* =========================
+       QUICK PROMPTS
+    ========================= */
+
+    .quick-prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+
+      margin-top: 20px;
+    }
+
+    .quick-prompts button {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+
+      padding: 9px 13px;
+
+      background: transparent;
+      color: #cfcfcf;
+
+      font-size: 13px;
+
+      transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
+    }
+
+    .quick-prompts button:hover {
+      background: var(--surface-2);
+      border-color: #666;
+      color: white;
+    }
+
+    /* =========================
+       INPUT
+    ========================= */
+
+    .composer-wrapper {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      padding: 18px 20px 22px;
+
+      background:
+        linear-gradient(
+          to top,
+          #212121 75%,
+          rgba(33, 33, 33, 0)
+        );
+    }
+
+    .composer {
+      width: min(850px, 100%);
+      margin: 0 auto;
+
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+
+      padding: 10px;
+
+      border: 1px solid #555;
+      border-radius: 15px;
+
+      background: var(--surface-2);
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .question-input {
+      width: 100%;
+      min-height: 45px;
+      max-height: 180px;
+
+      resize: none;
+
+      border: none;
+      outline: none;
+
+      background: transparent;
+
+      color: white;
+
+      padding: 10px 8px;
+
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .question-input::placeholder {
+      color: #9b9b9b;
+    }
+
+    .send-button {
+      width: 42px;
+      height: 42px;
+
+      flex: 0 0 42px;
+
+      border: none;
+      border-radius: 9px;
+
+      display: grid;
+      place-items: center;
+
+      background: var(--blue);
+      color: white;
+
+      font-size: 18px;
+      font-weight: 800;
+
+      transition:
+        background 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    .send-button:hover {
+      background: var(--blue-hover);
+      transform: translateY(-1px);
+    }
+
+    .send-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .composer-hint {
+      width: min(850px, 100%);
+      margin: 8px auto 0;
+
+      text-align: center;
+
+      color: #777;
+      font-size: 11px;
+    }
+
+    /* =========================
+       LOADING
+    ========================= */
+
+    .typing {
+      display: flex;
+      gap: 5px;
+
+      padding-top: 8px;
+    }
+
+    .typing span {
+      width: 7px;
+      height: 7px;
+
+      border-radius: 50%;
+
+      background: #aaa;
+
+      animation: typing 1.2s infinite;
+    }
+
+    .typing span:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .typing span:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      padding: 20px;
+
+      text-align: center;
+
+      color: #666;
+
+      font-size: 11px;
+    }
+
+    /* =========================
+       ANIMATIONS
+    ========================= */
+
+    @keyframes messageIn {
+      from {
+        opacity: 0;
+        transform: translateY(7px);
       }
 
-      * {
-        box-sizing: border-box;
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes typing {
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+        opacity: 0.4;
       }
 
-      body {
-        margin: 0;
-        min-width: 320px;
-        background:
-          radial-gradient(circle at 80% 0%, rgba(201, 222, 255, 0.7), transparent 32rem),
-          var(--page);
-        color: var(--ink);
-        font-family:
-          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
+      30% {
+        transform: translateY(-4px);
+        opacity: 1;
       }
+    }
 
-      button,
-      textarea {
-        font: inherit;
-      }
+    /* =========================
+       MOBILE
+    ========================= */
 
-      button {
-        cursor: pointer;
-      }
-
-      .app-shell {
-        min-height: 100vh;
-      }
-
+    @media (max-width: 600px) {
       .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        max-width: 1180px;
-        margin: 0 auto;
-        padding: 24px 28px;
+        padding: 0 16px;
       }
 
-      .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 11px;
-        color: var(--blue-950);
-        font-size: 1.08rem;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-      }
-
-      .brand-mark {
-        display: grid;
-        width: 36px;
-        height: 36px;
-        place-items: center;
-        border-radius: 11px;
-        background: var(--blue-700);
-        box-shadow: 0 7px 16px rgba(37, 99, 235, 0.28);
-        color: white;
-        font-size: 0.88rem;
-        font-weight: 800;
-      }
-
-      .server-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--muted);
-        font-size: 0.8rem;
-        font-weight: 600;
-      }
-
-      .status-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 99px;
-        background: #28b37a;
-        box-shadow: 0 0 0 4px rgba(40, 179, 122, 0.12);
+      .status {
+        display: none;
       }
 
       .main {
-        max-width: 1180px;
-        margin: 0 auto;
-        padding: 58px 28px 64px;
+        padding:
+          40px
+          16px
+          130px;
       }
 
       .intro {
-        max-width: 720px;
-        margin-bottom: 34px;
-      }
-
-      .eyebrow {
-        margin: 0 0 13px;
-        color: var(--blue-700);
-        font-size: 0.75rem;
-        font-weight: 800;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        margin-bottom: 30px;
       }
 
       h1 {
-        margin: 0;
-        color: var(--blue-950);
-        font-size: clamp(2.25rem, 5vw, 4rem);
-        letter-spacing: -0.065em;
-        line-height: 1.02;
+        font-size: 38px;
       }
 
       .intro p {
-        max-width: 560px;
-        margin: 19px 0 0;
-        color: var(--muted);
-        font-size: 1.07rem;
-        line-height: 1.7;
+        font-size: 14px;
       }
 
-      .workspace {
-        display: grid;
-        grid-template-columns: minmax(0, 1.4fr) minmax(250px, 0.6fr);
-        gap: 24px;
-        align-items: start;
-      }
-
-      .card {
-        border: 1px solid rgba(217, 227, 241, 0.9);
-        border-radius: 22px;
-        background: rgba(255, 255, 255, 0.86);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(10px);
-      }
-
-      .ask-card {
-        padding: 28px;
-      }
-
-      .card-heading {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 18px;
-        margin-bottom: 22px;
-      }
-
-      h2,
-      h3 {
-        margin: 0;
-        color: var(--blue-950);
-        letter-spacing: -0.035em;
-      }
-
-      h2 {
-        font-size: 1.35rem;
-      }
-
-      .card-heading p {
-        margin: 7px 0 0;
-        color: var(--muted);
-        font-size: 0.9rem;
-        line-height: 1.55;
-      }
-
-      .question-count {
-        flex: none;
-        padding: 7px 10px;
-        border-radius: 99px;
-        background: var(--blue-50);
-        color: var(--blue-700);
-        font-size: 0.72rem;
-        font-weight: 800;
-      }
-
-      .question-input {
-        width: 100%;
-        min-height: 148px;
-        resize: vertical;
-        border: 1px solid var(--line);
-        border-radius: 15px;
-        outline: none;
-        padding: 17px;
-        background: #fbfdff;
-        color: var(--ink);
-        font-size: 1rem;
-        line-height: 1.6;
-        transition:
-          border-color 160ms ease,
-          box-shadow 160ms ease,
-          background 160ms ease;
-      }
-
-      .question-input:focus {
-        border-color: var(--blue-600);
-        background: white;
-        box-shadow: 0 0 0 4px rgba(61, 122, 243, 0.12);
-      }
-
-      .question-input::placeholder {
-        color: #9caabd;
-      }
-
-      .form-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 14px;
-        margin-top: 16px;
-      }
-
-      .hint {
-        color: var(--muted);
-        font-size: 0.78rem;
-      }
-
-      .ask-button {
-        border: 0;
-        border-radius: 12px;
-        padding: 13px 18px;
-        background: var(--blue-700);
-        color: white;
-        font-weight: 800;
-        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.23);
-        transition:
-          transform 160ms ease,
-          background 160ms ease,
-          box-shadow 160ms ease;
-      }
-
-      .ask-button:hover {
-        background: #1d4ed8;
-        box-shadow: 0 11px 22px rgba(37, 99, 235, 0.3);
-        transform: translateY(-1px);
-      }
-
-      .ask-button:disabled {
-        cursor: wait;
-        opacity: 0.7;
-        transform: none;
+      .welcome {
+        padding: 19px;
       }
 
       .quick-prompts {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 22px;
+        flex-direction: column;
       }
 
       .quick-prompts button {
-        border: 1px solid var(--line);
-        border-radius: 99px;
-        padding: 8px 12px;
-        background: white;
-        color: #4f6078;
-        font-size: 0.78rem;
-        transition:
-          border-color 160ms ease,
-          color 160ms ease,
-          background 160ms ease;
-      }
-
-      .quick-prompts button:hover {
-        border-color: #b9cdf0;
-        background: var(--blue-50);
-        color: var(--blue-700);
-      }
-
-      .answer {
-        display: none;
-        margin-top: 24px;
-        border-top: 1px solid var(--line);
-        padding-top: 26px;
-        animation: reveal 260ms ease both;
-      }
-
-      .answer.visible {
-        display: block;
-      }
-
-      .answer-topline {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 14px;
-        margin-bottom: 10px;
-      }
-
-      .topic-label {
-        color: var(--blue-700);
-        font-size: 0.72rem;
-        font-weight: 800;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .answer-question {
-        margin: 0 0 18px;
-        color: var(--muted);
-        font-size: 0.86rem;
-      }
-
-      .answer-summary {
-        margin: 0;
-        color: var(--blue-950);
-        font-size: 1.12rem;
-        font-weight: 750;
-        line-height: 1.55;
-      }
-
-      .answer-section {
-        margin-top: 19px;
-      }
-
-      .answer-section h4 {
-        margin: 0 0 6px;
-        color: var(--blue-950);
-        font-size: 0.92rem;
-      }
-
-      .answer-section p {
-        margin: 0;
-        color: #52627a;
-        font-size: 0.92rem;
-        line-height: 1.7;
-      }
-
-      .follow-ups {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 22px;
-        padding-top: 18px;
-        border-top: 1px solid var(--line);
-      }
-
-      .follow-ups button {
-        border: 0;
-        padding: 0;
-        background: transparent;
-        color: var(--blue-700);
-        font-size: 0.8rem;
-        font-weight: 700;
+        width: 100%;
         text-align: left;
       }
 
-      .follow-ups button:hover {
-        text-decoration: underline;
+      .composer-wrapper {
+        padding:
+          12px
+          12px
+          18px;
       }
+    }
+  </style>
+</head>
 
-      .error {
-        display: none;
-        margin-top: 18px;
-        border-radius: 12px;
-        padding: 13px 15px;
-        background: #fff2f2;
-        color: #aa3c4a;
-        font-size: 0.86rem;
-        line-height: 1.5;
-      }
+<body>
 
-      .error.visible {
-        display: block;
-      }
+  <div class="app">
 
-      .side-column {
-        display: grid;
-        gap: 16px;
-      }
+    <!-- HEADER -->
+    <header class="topbar">
 
-      .side-card {
-        padding: 21px;
-      }
+      <a href="#" class="brand">
+        <span class="brand-mark">S</span>
+        <span>StudyAI</span>
+      </a>
 
-      .side-card h3 {
-        font-size: 1rem;
-      }
+      <div class="status">
+        <span class="status-dot"></span>
+        <span>Study assistant ready</span>
+      </div>
 
-      .side-card > p {
-        margin: 8px 0 18px;
-        color: var(--muted);
-        font-size: 0.82rem;
-        line-height: 1.55;
-      }
+    </header>
 
-      .topic-list {
-        display: grid;
-        gap: 9px;
-      }
 
-      .topic-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        border-radius: 12px;
-        padding: 10px;
-        background: var(--blue-50);
-      }
+    <!-- MAIN -->
+    <main class="main">
 
-      .topic-icon {
-        display: grid;
-        width: 29px;
-        height: 29px;
-        flex: none;
-        place-items: center;
-        border-radius: 9px;
-        background: white;
-        color: var(--blue-700);
-        font-size: 0.72rem;
-        font-weight: 900;
-      }
+      <section class="intro">
 
-      .topic-item strong {
-        display: block;
-        color: var(--blue-950);
-        font-size: 0.78rem;
-      }
+        <p class="eyebrow">AI Study Assistant</p>
 
-      .topic-item span {
-        display: block;
-        margin-top: 2px;
-        color: var(--muted);
-        font-size: 0.7rem;
-      }
+        <h1>
+          Learn with clarity.
+        </h1>
 
-      .recent-list {
-        display: grid;
-        gap: 4px;
-      }
+        <p>
+          Ask StudyAI anything about your subjects and get
+          simple explanations designed to help you understand,
+          revise, and remember.
+        </p>
 
-      .recent-empty {
-        margin: 0;
-        color: #94a1b4;
-        font-size: 0.8rem;
-        line-height: 1.55;
-      }
+      </section>
 
-      .recent-button {
-        overflow: hidden;
-        border: 0;
-        border-radius: 9px;
-        padding: 9px 10px;
-        background: transparent;
-        color: #57667c;
-        font-size: 0.77rem;
-        text-align: left;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
 
-      .recent-button:hover {
-        background: var(--blue-50);
-        color: var(--blue-700);
-      }
+      <!-- CHAT -->
+      <section class="chat-container" id="chatContainer">
 
-      footer {
-        max-width: 1180px;
-        margin: 0 auto;
-        padding: 0 28px 32px;
-        color: #9aa7b9;
-        font-size: 0.76rem;
-      }
+        <div class="welcome" id="welcome">
 
-      .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-      }
+          <h2>What would you like to learn?</h2>
 
-      @keyframes reveal {
-        from {
-          opacity: 0;
-          transform: translateY(6px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @media (max-width: 800px) {
-        .main {
-          padding-top: 34px;
-        }
-
-        .workspace {
-          grid-template-columns: 1fr;
-        }
-
-        .side-column {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-      }
-
-      @media (max-width: 560px) {
-        .topbar,
-        .main {
-          padding-right: 18px;
-          padding-left: 18px;
-        }
-
-        .topbar {
-          padding-top: 17px;
-          padding-bottom: 17px;
-        }
-
-        .main {
-          padding-top: 28px;
-        }
-
-        h1 {
-          font-size: 2.45rem;
-        }
-
-        .ask-card {
-          padding: 20px;
-        }
-
-        .form-footer {
-          align-items: stretch;
-          flex-direction: column;
-        }
-
-        .ask-button {
-          width: 100%;
-        }
-
-        .side-column {
-          grid-template-columns: 1fr;
-        }
-
-        footer {
-          padding-right: 18px;
-          padding-left: 18px;
-        }
-      }
-.side-card { display: none !important; }
-
-body { background: #212121 !important; color: #ececec !important; }
-main { background: #212121 !important; }
-.card { background: #2f2f2f !important; border-color: #444 !important; }
-textarea, input { background: #40414f !important; color: #fff !important; border-color: #565869 !important; }
-
-/* CHATGPT STYLE */
-body { background: #212121 !important; color: #ececec !important; }
-main, .container, .app, .page { background: #212121 !important; }
-.card, .answer-card { background: transparent !important; border: none !important; box-shadow: none !important; }
-.side-card { display: none !important; }
-footer { display: none !important; }
-
-    </style>
-  </head>
-  <body>
-    <div class="app-shell">
-      <header class="topbar">
-        <div class="brand">
-          <span class="brand-mark" aria-hidden="true">S</span>
-          <span>StudyAI</span>
-        </div>
-        <div class="server-status" aria-live="polite">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span id="status-text">Ready to help</span>
-        </div>
-      </header>
-
-      <main class="main">
-        <section class="intro" aria-labelledby="page-title">
-          <p class="eyebrow">Your study companion</p>
-          <h1 id="page-title">Make difficult topics feel simple.</h1>
           <p>
-            Ask a question, get a clear explanation, and keep your momentum
-            going. StudyAI is made for focused revision without the noise.
+            Ask a question, explain a difficult topic,
+            or use one of the examples below.
           </p>
-        </section>
 
-        <div class="workspace">
-          <section class="card ask-card" aria-labelledby="ask-title">
-            <div class="card-heading">
-              <div>
-                <h2 id="ask-title">Ask StudyAI</h2>
-                <p>Use your own words. We will meet you at your level.</p>
-              </div>
-              <span class="question-count">1 question at a time</span>
-            </div>
+          <div class="quick-prompts">
 
-            <form id="ask-form">
-              <label class="sr-only" for="question">Your study question</label>
-              <textarea
-                id="question"
-                class="question-input"
-                maxlength="500"
-                placeholder="Try: Explain photosynthesis in simple terms..."
-                required
-              ></textarea>
-              <div class="form-footer">
-                <span class="hint">Press Ctrl + Enter to ask</span>
-                <button class="ask-button" id="ask-button" type="submit">
-                  Ask StudyAI
-                </button>
-              </div>
-            </form>
+            <button
+              type="button"
+              data-question="Explain photosynthesis in simple terms."
+            >
+              Explain photosynthesis
+            </button>
 
-            <div class="quick-prompts" aria-label="Suggested questions">
-              <button type="button" data-prompt="Explain photosynthesis in simple terms">
-                Photosynthesis
-              </button>
-              <button type="button" data-prompt="Teach me surds step-by-step">
-                Surds
-              </button>
-              <button type="button" data-prompt="Explain Newton's laws of motion">
-                Newton's laws
-              </button>
-              <button type="button" data-prompt="Explain the cell">
-                Cell biology
-              </button>
-            </div>
+            <button
+              type="button"
+              data-question="What is the difference between mitosis and meiosis?"
+            >
+              Mitosis vs meiosis
+            </button>
 
-            <div class="error" id="error-message" role="alert"></div>
-            <article class="answer" id="answer" aria-live="polite"></article>
-          </section>
+            <button
+              type="button"
+              data-question="Explain Newton's three laws of motion."
+            >
+              Newton's laws
+            </button>
 
-          <aside class="side-column" aria-label="StudyAI information">
-            <section class="card side-card">
-              <h3>Start with a topic</h3>
-              <p>Short, structured explanations for the subjects you revisit most.</p>
-              <div class="topic-list">
-                <div class="topic-item">
-                  <span class="topic-icon">BIO</span>
-                  <div>
-                    <strong>Biology</strong>
-                    <span>Cells and life processes</span>
-                  </div>
-                </div>
-                <div class="topic-item">
-                  <span class="topic-icon">PHY</span>
-                  <div>
-                    <strong>Physics</strong>
-                    <span>Forces and motion</span>
-                  </div>
-                </div>
-                <div class="topic-item">
-                  <span class="topic-icon">MAT</span>
-                  <div>
-                    <strong>Mathematics</strong>
-                    <span>Practice and methods</span>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <button
+              type="button"
+              data-question="Give me a simple way to understand probability."
+            >
+              Learn probability
+            </button>
 
-            <section class="card side-card">
-              <h3>Recent questions</h3>
-              <p>Your last few prompts stay here on this device.</p>
-              <div class="recent-list" id="recent-list">
-                <p class="recent-empty">Your study trail will appear here.</p>
-              </div>
-            </section>
-          </aside>
+          </div>
+
         </div>
-      </main>
 
-      <footer>StudyAI · Learn clearly, one question at a time.</footer>
+      </section>
+
+    </main>
+
+
+    <!-- COMPOSER -->
+    <div class="composer-wrapper">
+
+      <form class="composer" id="questionForm">
+
+        <textarea
+          id="questionInput"
+          class="question-input"
+          rows="1"
+          placeholder="Message StudyAI..."
+          aria-label="Ask StudyAI a question"
+          required
+        ></textarea>
+
+        <button
+          type="submit"
+          class="send-button"
+          id="sendButton"
+          aria-label="Send question"
+        >
+          ↑
+        </button>
+
+      </form>
+
+      <div class="composer-hint">
+        StudyAI can make mistakes. Check important information.
+      </div>
+
     </div>
 
-    <script>
-      const form = document.getElementById("ask-form");
-      const questionInput = document.getElementById("question");
-      const askButton = document.getElementById("ask-button");
-      const answer = document.getElementById("answer");
-      const errorMessage = document.getElementById("error-message");
-      const recentList = document.getElementById("recent-list");
-      const statusText = document.getElementById("status-text");
-      const RECENT_KEY = "studyai-recent-questions";
 
-      function escapeHtml(value) {
-        return String(value)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
+    <footer>
+      StudyAI • Learn smarter, understand better.
+    </footer>
+
+  </div>
+
+
+  <script>
+
+    const form = document.getElementById("questionForm");
+    const input = document.getElementById("questionInput");
+    const sendButton = document.getElementById("sendButton");
+    const chatContainer = document.getElementById("chatContainer");
+    const welcome = document.getElementById("welcome");
+
+
+    /*
+      ==========================
+      AUTO RESIZE TEXTAREA
+      ==========================
+    */
+
+    input.addEventListener("input", () => {
+
+      input.style.height = "auto";
+
+      input.style.height =
+        Math.min(input.scrollHeight, 180) + "px";
+
+    });
+
+
+    /*
+      ==========================
+      QUICK PROMPTS
+      ==========================
+    */
+
+    document
+      .querySelectorAll(".quick-prompts button")
+      .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+          input.value = button.dataset.question;
+
+          input.dispatchEvent(new Event("input"));
+
+          input.focus();
+
+        });
+
+      });
+
+
+    /*
+      ==========================
+      ADD MESSAGE
+      ==========================
+    */
+
+    function addMessage(role, text) {
+
+      const message = document.createElement("div");
+
+      message.className =
+        `message ${role}`;
+
+
+      const avatar = document.createElement("div");
+
+      avatar.className = "message-avatar";
+
+      avatar.textContent =
+        role === "user" ? "YOU" : "S";
+
+
+      const content = document.createElement("div");
+
+      content.className = "message-content";
+
+
+      const name = document.createElement("div");
+
+      name.className = "message-name";
+
+      name.textContent =
+        role === "user" ? "You" : "StudyAI";
+
+
+      const messageText = document.createElement("div");
+
+      messageText.className = "message-text";
+
+      messageText.textContent = text;
+
+
+      content.appendChild(name);
+
+      content.appendChild(messageText);
+    message.appendChild(avatar);
+
+      message.appendChild(content);
+
+      chatContainer.appendChild(message);
+
+
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+      });
+
+    }
+
+
+    /*
+      ==========================
+      LOADING MESSAGE
+      ==========================
+    */
+
+    function addTyping() {
+
+      const message = document.createElement("div");
+
+      message.className = "message";
+
+      message.id = "typingMessage";
+
+
+      message.innerHTML = `
+
+        <div class="message-avatar">
+          S
+        </div>
+
+        <div class="message-content">
+
+          <div class="message-name">
+            StudyAI
+          </div>
+
+          <div class="typing">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+        </div>
+
+      `;
+
+
+      chatContainer.appendChild(message);
+
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+      });
+
+    }
+
+
+    /*
+      ==========================
+      REMOVE LOADING
+      ==========================
+    */
+
+    function removeTyping() {
+
+      const typing =
+        document.getElementById("typingMessage");
+
+      if (typing) {
+        typing.remove();
       }
 
-      function getRecentQuestions() {
-        try {
-          const saved = JSON.parse(localStorage.getItem(RECENT_KEY) || "[]");
-          return Array.isArray(saved) ? saved.filter((item) => typeof item === "string") : [];
-        } catch {
-          return [];
-        }
+    }
+
+
+    /*
+      ==========================
+      DEMO AI
+      ==========================
+    */
+
+    function generateDemoAnswer(question) {
+
+      const q = question.toLowerCase();
+
+
+      if (q.includes("photosynthesis")) {
+
+        return `Photosynthesis is the process plants use to make their own food.
+
+Plants take in carbon dioxide from the air and water from the soil. Using sunlight and chlorophyll, they convert these materials into glucose, which stores energy.
+
+Oxygen is released as a by-product.
+
+In simple terms:
+
+Sunlight + water + carbon dioxide → glucose + oxygen
+
+A useful way to remember it is: plants use sunlight to turn water and carbon dioxide into food.`;
+
+
       }
 
-      function saveRecentQuestion(question) {
-        const questions = [question, ...getRecentQuestions().filter((item) => item !== question)].slice(0, 5);
-        localStorage.setItem(RECENT_KEY, JSON.stringify(questions));
-        renderRecentQuestions();
+
+      if (
+        q.includes("mitosis") ||
+        q.includes("meiosis")
+      ) {
+
+        return `Mitosis and meiosis are both types of cell division, but they have different purposes.
+
+Mitosis produces two genetically similar cells. It is mainly used for growth, repair, and replacing damaged cells.
+
+Meiosis produces four genetically different cells. It is used to produce reproductive cells such as sperm and eggs.
+
+The key difference is:
+
+Mitosis → 2 similar cells
+
+Meiosis → 4 different cells
+
+Meiosis also reduces the chromosome number by half.`;
+
+
       }
 
-      function renderRecentQuestions() {
-        const questions = getRecentQuestions();
-        if (!questions.length) {
-          recentList.innerHTML = '<p class="recent-empty">Your study trail will appear here.</p>';
-          return;
-        }
-        recentList.innerHTML = questions
-          .map(
-            (question) =>
-              `<button class="recent-button" type="button" data-recent="${escapeHtml(question)}">${escapeHtml(question)}</button>`,
-          )
-          .join("");
+
+      if (
+        q.includes("newton") ||
+        q.includes("motion")
+      ) {
+
+        return `Newton's three laws describe how forces affect motion.
+
+1. First law — An object remains at rest or continues moving at constant velocity unless an external force acts on it.
+
+2. Second law — The acceleration of an object depends on the force applied and its mass.
+
+Formula: F = ma
+
+3. Third law — For every action, there is an equal and opposite reaction.
+
+A simple example is jumping. Your legs push the ground downward, and the ground pushes you upward.`;
+
+
       }
 
-      function setError(message) {
-        errorMessage.textContent = message || "";
-        errorMessage.classList.toggle("visible", Boolean(message));
+
+      if (
+        q.includes("probability")
+      ) {
+
+        return `Probability is a way of measuring how likely something is to happen.
+
+It ranges from 0 to 1.
+
+0 means the event is impossible.
+
+1 means the event is certain.
+
+For equally likely outcomes:
+
+Probability = favourable outcomes ÷ total possible outcomes
+
+For example, when rolling a fair six-sided die, the probability of rolling a 3 is:
+
+1 ÷ 6
+
+So the probability is 1/6, or about 16.7%.`;
+
+
       }
 
-      function renderAnswer(question, guide) {
-  const text = typeof guide === "string"
-    ? guide
-    : (guide?.answer || guide?.text || "No answer was generated.");
 
-  answer.innerHTML = `
-    <div class="answer-topline">StudyAI</div>
-    <div class="answer-section">
-      <p>${escapeHtml(text).replace(/\\n/g, "<br>")}</p>
-    </div>
-  `;
-  answer.classList.add("visible");
-}
+      return `That's a good study question.
 
-async function askQuestion(question) {
-        const trimmedQuestion = question.trim();
-        if (!trimmedQuestion) {
-          setError("Please enter a question first.");
-          questionInput.focus();
-          return;
-        }
+To understand "${question}", start by identifying the main concept, then break it into smaller parts.
 
-        setError("");
-        answer.classList.remove("visible");
-        askButton.disabled = true;
-        askButton.textContent = "Thinking...";
-        statusText.textContent = "Working on it";
+A useful study approach is:
 
-        try {
-          const response = await fetch("/api/ask", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question: trimmedQuestion }),
-          });
-          const payload = await response.json();
-          if (!response.ok) {
-            throw new Error(payload.error || "StudyAI could not answer that.");
-          }
-          renderAnswer(payload.question, payload.answer);
-          saveRecentQuestion(payload.question);
-          statusText.textContent = "Ready to help";
-        } catch (error) {
-          setError(error.message || "Could not reach StudyAI. Please try again.");
-          statusText.textContent = "Connection issue";
-        } finally {
-          askButton.disabled = false;
-          askButton.textContent = "Ask StudyAI";
-        }
+1. Define the concept in simple words.
+2. Identify the important ideas or rules.
+3. Work through an example.
+4. Explain it again in your own words.
+5. Test yourself without looking at your notes.
+
+For a more detailed answer, connect StudyAI to an AI backend/API so it can generate responses to any question.`;
+
+    }
+
+
+    /*
+      ==========================
+      FORM SUBMISSION
+      ==========================
+    */
+
+    form.addEventListener("submit", async (event) => {
+
+      event.preventDefault();
+
+
+      const question =
+        input.value.trim();
+
+
+      if (!question) {
+        return;
       }
 
-      form.addEventListener("submit", (event) => {
+
+      /*
+        Hide welcome panel after
+        first question.
+      */
+
+      if (welcome) {
+        welcome.remove();
+      }
+
+
+      addMessage(
+        "user",
+        question
+      );
+
+
+      input.value = "";
+
+      input.style.height = "auto";
+
+      sendButton.disabled = true;
+
+
+      addTyping();
+
+
+      /*
+        Demo delay so the interface
+        feels like an AI assistant.
+      */
+
+      await new Promise(resolve =>
+        setTimeout(resolve, 900)
+      );
+
+
+      removeTyping();
+
+
+        const response = await fetch("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question }) });
+        const data = await response.json();
+        const answer = data.answer || "StudyAI could not answer."; 
+
+      addMessage(
+        "assistant",
+        answer
+      );
+
+
+      sendButton.disabled = false;
+
+      input.focus();
+
+    });
+
+
+    /*
+      ==========================
+      ENTER TO SEND
+      ==========================
+    */
+
+    input.addEventListener("keydown", event => {
+
+      if (
+        event.key === "Enter" &&
+        !event.shiftKey
+      ) {
+
         event.preventDefault();
-        askQuestion(questionInput.value);
-      });
 
-      questionInput.addEventListener("keydown", (event) => {
-        if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-          event.preventDefault();
-          form.requestSubmit();
-        }
-      });
+        form.requestSubmit();
 
-      document.addEventListener("click", (event) => {
-        const button = event.target.closest("[data-prompt], [data-recent]");
-        if (!button) return;
-        const prompt = button.dataset.prompt || button.dataset.recent;
-        questionInput.value = prompt;
-        questionInput.focus();
-        if (button.dataset.prompt) {
-          askQuestion(prompt);
-        }
-      });
+      }
 
-      renderRecentQuestions();
-    </script>
-  </body>
+    });
+
+  </script>
+
+</body>
+</html>// Show a friendly first assistant message
+window.addEventListener("DOMContentLoaded", function() {
+addMessage(
+"Hi! I'm StudyAI. Ask me a question about any subject and I'll help you understand it step by step.",
+"assistant"
+);
+});
+</script>
+
+</body>
 </html>
