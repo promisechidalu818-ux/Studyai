@@ -14,16 +14,31 @@ async function answerQuestion(question) {
     return "Please enter a question.";
   }
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3.6-flash",
-    contents: question,
-    config: {
-      systemInstruction:
-        "You are StudyAI, a helpful school tutor. Answer students' questions clearly and accurately. Explain difficult ideas in simple language, give examples when useful, and show steps for mathematics or science problems. Do not assume the question is about any particular subject. Answer the question directly."
-    }
-  });
+  const maxAttempts = 3;
 
-  return response.text || "I could not generate an answer.";
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const response = await ai.models.generateContent({
+        model: "gemini-3.6-flash",
+        contents: question,
+        config: {
+          systemInstruction:
+            "You are StudyAI, a helpful school tutor. Answer students' questions clearly and accurately. Explain difficult ideas in simple language, give examples when useful, and show steps for mathematics or science problems. Do not assume the question is about any particular subject. Answer the question directly."
+        }
+      });
+
+      return response.text || "I could not generate an answer.";
+    } catch (error) {
+      const message = String(error?.message || error);
+
+      if (attempt < maxAttempts && (message.includes("503") || message.includes("UNAVAILABLE"))) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * 2 ** (attempt - 1)));
+        continue;
+      }
+
+      throw error;
+    }
+  }
 }
 
 function sendJson(res, statusCode, data) {
