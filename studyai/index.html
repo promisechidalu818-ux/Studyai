@@ -382,40 +382,7 @@ margin-bottom: 25px;
     </p>
   </section>
 
-  <section class="quick-prompts">
-
-    <button
-      class="quick-btn"
-      data-question="Explain photosynthesis in simple terms."
-    >
-      🌱 Explain photosynthesis
-    </button>
-
-    <button
-      class="quick-btn"
-      data-question="Solve 2x + 5 = 15 step by step."
-    >
-      ➗ Solve 2x + 5 = 15
-    </button>
-
-    <button
-      class="quick-btn"
-      data-question="What is artificial intelligence? Explain it simply."
-    >
-      🤖 What is artificial intelligence?
-    </button>
-
-    <button
-      class="quick-btn"
-      data-question="Explain Newton's three laws of motion with examples."
-    >
-      ⚙️ Explain Newton's laws
-    </button>
-
-<button type="button" class="quick-btn" data-question="Teach me this topic step by step. Explain it simply, give me an example, then give me a practice question." onclick="document.getElementById('questionInput').value=this.dataset.question; document.getElementById('questionInput').dispatchEvent(new Event('input')); document.getElementById('questionInput').focus(); document.getElementById('questionForm').requestSubmit()">
-📚 Study Mode
-</button>
-  </section>
+  
 
 <section id="chat" class="chat"></section>
 
@@ -1044,37 +1011,7 @@ margin-bottom: 25px;
             or use one of the examples below.
           </p>
 
-          <div class="quick-prompts">
-
-            <button
-              type="button"
-              data-question="Explain photosynthesis in simple terms."
-            >
-              Explain photosynthesis
-            </button>
-
-            <button
-              type="button"
-              data-question="What is the difference between mitosis and meiosis?"
-            >
-              Mitosis vs meiosis
-            </button>
-
-            <button
-              type="button"
-              data-question="Explain Newton's three laws of motion."
-            >
-              Newton's laws
-            </button>
-
-            <button
-              type="button"
-              data-question="Give me a simple way to understand probability."
-            >
-              Learn probability
-            </button>
-
-          </div>
+          
 
         </div>
 
@@ -1147,27 +1084,6 @@ margin-bottom: 25px;
     });
 
 
-    /*
-      ==========================
-      QUICK PROMPTS
-      ==========================
-    */
-
-    document
-      .querySelectorAll(".quick-prompts button")
-      .forEach(button => {
-
-        button.addEventListener("click", () => {
-
-          input.value = button.dataset.question;
-
-          input.dispatchEvent(new Event("input"));
-
-          input.focus();
-
-        });
-
-      });
 
 
     /*
@@ -1303,114 +1219,6 @@ margin-bottom: 25px;
       ==========================
     */
 
-    function generateDemoAnswer(question) {
-
-      const q = question.toLowerCase();
-
-
-      if (q.includes("photosynthesis")) {
-
-        return `Photosynthesis is the process plants use to make their own food.
-
-Plants take in carbon dioxide from the air and water from the soil. Using sunlight and chlorophyll, they convert these materials into glucose, which stores energy.
-
-Oxygen is released as a by-product.
-
-In simple terms:
-
-Sunlight + water + carbon dioxide → glucose + oxygen
-
-A useful way to remember it is: plants use sunlight to turn water and carbon dioxide into food.`;
-
-
-      }
-
-
-      if (
-        q.includes("mitosis") ||
-        q.includes("meiosis")
-      ) {
-
-        return `Mitosis and meiosis are both types of cell division, but they have different purposes.
-
-Mitosis produces two genetically similar cells. It is mainly used for growth, repair, and replacing damaged cells.
-
-Meiosis produces four genetically different cells. It is used to produce reproductive cells such as sperm and eggs.
-
-The key difference is:
-
-Mitosis → 2 similar cells
-
-Meiosis → 4 different cells
-
-Meiosis also reduces the chromosome number by half.`;
-
-
-      }
-
-
-      if (
-        q.includes("newton") ||
-        q.includes("motion")
-      ) {
-
-        return `Newton's three laws describe how forces affect motion.
-
-1. First law — An object remains at rest or continues moving at constant velocity unless an external force acts on it.
-
-2. Second law — The acceleration of an object depends on the force applied and its mass.
-
-Formula: F = ma
-
-3. Third law — For every action, there is an equal and opposite reaction.
-
-A simple example is jumping. Your legs push the ground downward, and the ground pushes you upward.`;
-
-
-      }
-
-
-      if (
-        q.includes("probability")
-      ) {
-
-        return `Probability is a way of measuring how likely something is to happen.
-
-It ranges from 0 to 1.
-
-0 means the event is impossible.
-
-1 means the event is certain.
-
-For equally likely outcomes:
-
-Probability = favourable outcomes ÷ total possible outcomes
-
-For example, when rolling a fair six-sided die, the probability of rolling a 3 is:
-
-1 ÷ 6
-
-So the probability is 1/6, or about 16.7%.`;
-
-
-      }
-
-
-      return `That's a good study question.
-
-To understand "${question}", start by identifying the main concept, then break it into smaller parts.
-
-A useful study approach is:
-
-1. Define the concept in simple words.
-2. Identify the important ideas or rules.
-3. Work through an example.
-4. Explain it again in your own words.
-5. Test yourself without looking at your notes.
-
-For a more detailed answer, connect StudyAI to an AI backend/API so it can generate responses to any question.`;
-
-    }
 
 
     /*

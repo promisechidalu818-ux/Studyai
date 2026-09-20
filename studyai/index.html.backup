@@ -412,9 +412,12 @@ margin-bottom: 25px;
       ⚙️ Explain Newton's laws
     </button>
 
+<button type="button" class="quick-btn" data-question="Teach me this topic step by step. Explain it simply, give me an example, then give me a practice question." onclick="document.getElementById('questionInput').value=this.dataset.question; document.getElementById('questionInput').dispatchEvent(new Event('input')); document.getElementById('questionInput').focus(); document.getElementById('questionForm').requestSubmit()">
+📚 Study Mode
+</button>
   </section>
 
-  <section id="chat" class="chat"></section>
+<section id="chat" class="chat"></section>
 
   <div id="typing" class="typing">
     <span></span>
