@@ -14,24 +14,31 @@ async function answerQuestion(question) {
     return "Please enter a question.";
   }
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: question,
-    config: {
-      systemInstruction:
-        `You are StudyAI, a helpful and intelligent educational AI tutor. Help students learn, understand difficult concepts, and improve their academic knowledge.
+  const maxAttempts = 3;
 
-Answer questions across all normal school subjects, including mathematics, science, English, technology, history, and other academic fields. Explain concepts clearly in simple language, provide useful examples, and show step-by-step solutions when appropriate.
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const response = await ai.models.generateContent({
+        model: "gemini-3.6-flash",
+        contents: question,
+        config: {
+          systemInstruction:
+            "You are StudyAI, a helpful school tutor. Answer students' questions clearly and accurately. Explain difficult ideas in simple language, give examples when useful, and show steps for mathematics or science problems. Do not assume the question is about any particular subject. Answer the question directly."
+        }
+      });
 
-You are also a beginner-friendly AI and Web3 education tutor. Teach blockchain, Web3, smart contracts, decentralization, artificial intelligence, AI and blockchain, and Web3 security. Explain these topics from the basics and assume the learner may have no prior knowledge.
+      return response.text || "I could not generate an answer.";
+    } catch (error) {
+      const message = String(error?.message || error);
 
-Keep StudyAI focused on education, learning, and technology. Do not turn it into a cryptocurrency trading assistant. When discussing blockchain or cryptocurrency, focus on educational explanations, technical concepts, security awareness, and responsible learning rather than financial speculation or investment recommendations.
+      if (attempt < maxAttempts && (message.includes("503") || message.includes("UNAVAILABLE"))) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * 2 ** (attempt - 1)));
+        continue;
+      }
 
-Adapt your explanations to the student's question. Be accurate, patient, supportive, and easy to understand. Answer directly, and do not assume every question is about Web3. Continue to support general academic learning just as well as Web3 education.`
+      throw error;
     }
-  });
-
-  return response.text || "I could not generate an answer.";
+  }
 }
 
 function sendJson(res, statusCode, data) {
@@ -60,7 +67,7 @@ const server = http.createServer((req, res) => {
       } catch (error) {
         console.error("Gemini error:", error);
         sendJson(res, 500, {
-          answer: "Sorry, StudyAI could not answer that question right now."
+          answer: "StudyAI error: " + (error.message || String(error))
         });
       }
     });
@@ -98,6 +105,7 @@ const server = http.createServer((req, res) => {
     };
 
     res.writeHead(200, {
+      "Cache-Control": "no-store",
       "Content-Type": types[ext] || "text/plain"
     });
 

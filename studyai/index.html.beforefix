@@ -1513,4 +1513,14 @@ For a more detailed answer, connect StudyAI to an AI backend/API so it can gener
   </script>
 
 </body>
+</html>// Show a friendly first assistant message
+window.addEventListener("DOMContentLoaded", function() {
+addMessage(
+"Hi! I'm StudyAI. Ask me a question about any subject and I'll help you understand it step by step.",
+"assistant"
+);
+});
+</script>
+
+</body>
 </html>
